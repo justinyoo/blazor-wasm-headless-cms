@@ -1,20 +1,22 @@
-using System.Text.Json.Serialization;
+using System;
 
-namespace BlazorApp.Models
+using Newtonsoft.Json;
+
+namespace FacadeApp.Models
 {
     public class PostItem
     {
-        [JsonPropertyName("ID")]
+        [JsonProperty("ID")]
         public virtual int PostId { get; set; }
 
         public virtual Author Author { get; set; }
 
-        [JsonPropertyName("date")]
+        [JsonProperty("date")]
         public virtual DateTimeOffset DatePublished { get; set; }
 
         public virtual string Title { get; set; }
 
-        [JsonPropertyName("URL")]
+        [JsonProperty("URL")]
         public virtual string Url { get; set; }
 
         public virtual string Excerpt { get; set; }

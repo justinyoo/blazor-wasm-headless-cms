@@ -16,27 +16,35 @@ This provides sample code for Blazor WASM app that builds a headless CMS, using 
 
 ### Azure Static Web App Instance ###
 
-1. Update `appsettings.sample.json` to `appsettings.json`, and replace the `<your_wordpress_site_name>` part with yours.
+1. Update FacadeApp's `local.settings.sample.json` to `local.settings.json`, and replace `<your_wordpress_site_name>` with yours.
 
     ```json
     {
-      "SITE__NAME": "<your_wordpress_site_name>.wordpress.com"
+      "Values": {
+        "SITE__NAME": "<your_wordpress_site_name>.wordpress.com"
+      }
     }
     ```
 
 2. Publish the Blazor WASM app.
 
     ```bash
-    cd ./BlazorApp
-    dotnet publish . -c Release
+    dotnet publish ./BlazorApp -c Release
     ```
 
-3. Run the following Azure CLI commands.
+3. Publish the Function app
+
+    ```bash
+    dotnet publish ./FacadeApp -c Release
+    ```
+
+4. Run the following Azure CLI commands.
 
     ```bash
     resource_group=<resource_group_name>
     swa_name=<staticwebapp_name>
     location=<location>
+    wp_name=<your_wordpress_site_name>.wordpress.com
 
     # Create a resource group
     az group create -n $resource_group -l $location
@@ -47,6 +55,13 @@ This provides sample code for Blazor WASM app that builds a headless CMS, using 
     # Get Azure Static Web App deployment key
     swa_key=$(az staticwebapp secrets list -g $resource_group -n $swa_name --query "properties.apiKey" -o tsv)
     
+    # Update app settings for Azure Static Web App
+    az staticwebapp appsettings set -g $resource_group -n $swa_name --setting-names SITE__NAME=$wp_name
+
     # Deploy Azure Static Web App
-    swa deploy -a ./bin/Release/net6.0/publish/wwwroot -d $swa_key --env default
+    swa deploy \
+        -a ./BlazorApp/bin/Release/net6.0/publish/wwwroot \
+        -i ./FacadeApp/bin/Release/net6.0/publish \
+        -d $swa_key \
+        --env default
     ```

@@ -1,16 +1,16 @@
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
-namespace BlazorApp.Models
+namespace FacadeApp.Models
 {
     public class Author
     {
-        [JsonPropertyName("ID")]
+        [JsonProperty("ID")]
         public virtual int AuthorId { get; set; }
 
-        [JsonPropertyName("first_name")]
+        [JsonProperty("first_name")]
         public virtual string FirstName { get; set; }
 
-        [JsonPropertyName("last_name")]
+        [JsonProperty("last_name")]
         public virtual string Surname { get; set; }
 
         public virtual string Name { get; set; }

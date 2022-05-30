@@ -1,6 +1,8 @@
-using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
-namespace BlazorApp.Models
+using Newtonsoft.Json;
+
+namespace FacadeApp.Models
 {
     public class PostCollection
     {
@@ -8,7 +10,7 @@ namespace BlazorApp.Models
 
         public virtual List<PostItem> Posts { get; set; } = new List<PostItem>();
 
-        [JsonPropertyName("meta")]
+        [JsonProperty("meta")]
         public virtual Metadata Metadata { get; set; }
     }
 }

@@ -1,15 +1,17 @@
-using System.Text.Json.Serialization;
+using System.Collections.Generic;
 
-namespace BlazorApp.Models
+using Newtonsoft.Json;
+
+namespace FacadeApp.Models
 {
     public class Metadata
     {
         public virtual Dictionary<string, string> Links { get; set; }
 
-        [JsonPropertyName("next_page")]
+        [JsonProperty("next_page")]
         public virtual string NextPage { get; set; }
 
-        [JsonPropertyName("wpcom")]
+        [JsonProperty("wpcom")]
         public virtual bool IsWordpressCom { get; set; }
     }
 }
