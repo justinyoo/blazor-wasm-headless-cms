@@ -10,6 +10,7 @@ This provides sample code for Blazor WASM app that builds a headless CMS, using 
 * [Azure Account (Free)](https://azure.microsoft.com/free/?WT.mc_id=dotnet-68007-juyoo)
 * [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli?WT.mc_id=dotnet-68007-juyoo)
 * [Azure Static Web Apps CLI](https://github.com/Azure/static-web-apps-cli)
+* [AutoRest](https://github.com/Azure/autorest)
 
 
 ## Getting Started ##
