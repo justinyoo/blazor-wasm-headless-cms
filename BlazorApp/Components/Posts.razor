@@ -20,9 +20,9 @@
                 @foreach (var post in this.PostItems)
                 {
                     <tr>
-                        <td>@post.DatePublished.ToString()</td>
+                        <td>@post.Date.ToString()</td>
                         <td>@post.Author.Name</td>
-                        <td><a href="@post.Url">@post.Title</a></td>
+                        <td><a href="@post.URL">@post.Title</a></td>
                         <td>@((MarkupString)post.Excerpt)</td>
                     </tr>
                 }

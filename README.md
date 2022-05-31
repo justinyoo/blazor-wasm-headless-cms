@@ -10,6 +10,7 @@ This provides sample code for Blazor WASM app that builds a headless CMS, with A
 * [Azure Account (Free)](https://azure.microsoft.com/free/?WT.mc_id=dotnet-68007-juyoo)
 * [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli?WT.mc_id=dotnet-68007-juyoo)
 * [Azure Static Web Apps CLI](https://github.com/Azure/static-web-apps-cli)
+* [Nswag](https://github.com/RicoSuter/NSwag)
 
 
 ## Getting Started ##
@@ -21,6 +22,16 @@ If you have not already installed the SWA CLI yet, run the following command to 
 ```bash
 npm install -g @azure/static-web-apps-cli
 ```
+
+
+### Install NSwag ###
+
+If you have not already installed Nswag yet, run the following command to install it.
+
+```bash
+npm install -g nswag
+```
+
 
 ### Run Blazor WASM App Locally ###
 
@@ -69,19 +80,39 @@ npm install -g @azure/static-web-apps-cli
     dotnet build .
     ```
 
-3. Publish the Blazor WASM app.
+3. (Optional) Run the function app locally.
+
+    ```bash
+    cd ./FacadeApp
+
+    func start
+    ```
+
+4. (Optional) Generate proxy client, using NSwag.
+
+    ```bash
+    cd ./BlazorApp.Proxies
+
+    nswag openapi2csclient \
+        /input:http://localhost:7071/api/openapi/v3.json \
+        /namespace:BlazorApp.Proxies \
+        /classname:ProxyClient \
+        /output:ProxyClient.cs
+    ```
+
+5. Publish the Blazor WASM app.
 
     ```bash
     dotnet publish ./BlazorApp -c Release -o ./BlazorApp/bin
     ```
 
-4. Publish the Function app
+6. Publish the Function app
 
     ```bash
     dotnet publish ./FacadeApp -c Release -o ./FacadeApp/bin/published
     ```
 
-5. Run the following Azure CLI commands.
+7. Run the following Azure CLI commands.
 
     ```bash
     resource_group=<resource_group_name>
@@ -108,4 +139,4 @@ npm install -g @azure/static-web-apps-cli
     swa deploy -i ./FacadeApp/bin/published -d $swa_key --env default
     ```
 
-6. Open a web browser and go to the URL showing on the terminal.
+8. Open a web browser and go to the URL showing on the terminal.
