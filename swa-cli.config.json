@@ -3,8 +3,10 @@
   "configurations": {
     "blazor-wasm-headless-cms": {
       "appLocation": "BlazorApp",
+      "apiLocation": "FacadeApp",
       "outputLocation": "bin/wwwroot",
       "appBuildCommand": "dotnet publish -c Release -o bin",
+      "apiBuildCommand": "dotnet publish -c Release -o bin/published",
       "run": "dotnet watch run",
       "appDevserverUrl": "https://localhost:5001"
     }
