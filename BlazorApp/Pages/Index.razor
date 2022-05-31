@@ -1,4 +1,4 @@
-﻿@page "/"
+@page "/"
 
 <PageTitle>Index</PageTitle>
 
@@ -8,11 +8,31 @@ Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
 
-@if(string.IsNullOrWhiteSpace(this.Posts))
+@if(this.Posts == null)
 {
-    <p>No posts yet.</p>
+    <p>No post yet.</p>
 }
 else
 {
-    <pre>@this.Posts</pre>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Author</th>
+                <th>Title</th>
+                <th>Excerpt</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var post in this.Posts)
+            {
+                <tr>
+                    <td>@post.Date.ToString()</td>
+                    <td>@post.Author.Name</td>
+                    <td><a href="@post.URL">@post.Title</a></td>
+                    <td>@((MarkupString)post.Excerpt)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }

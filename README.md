@@ -10,12 +10,30 @@ This provides sample code for Blazor WASM app that builds a headless CMS, using 
 * [Azure Account (Free)](https://azure.microsoft.com/free/?WT.mc_id=dotnet-68007-juyoo)
 * [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli?WT.mc_id=dotnet-68007-juyoo)
 * [Azure Static Web Apps CLI](https://github.com/Azure/static-web-apps-cli)
-* [AutoRest](https://github.com/Azure/autorest)
+* [Nswag](https://github.com/RicoSuter/NSwag)
 
 
 ## Getting Started ##
 
-### Azure Static Web App Instance ###
+### Install Azure Static Web App (SWA) CLI ###
+
+If you have not already installed the SWA CLI yet, run the following command to install it.
+
+```bash
+npm install -g @azure/static-web-apps-cli
+```
+
+
+### Install NSwag ###
+
+If you have not already installed Nswag yet, run the following command to install it.
+
+```bash
+npm install -g nswag
+```
+
+
+### Build and Deploy App to Azure Static Web App ###
 
 1. Update FacadeApp's `local.settings.sample.json` to `local.settings.json`, and replace `<your_wordpress_site_name>` with yours.
 
@@ -27,19 +45,46 @@ This provides sample code for Blazor WASM app that builds a headless CMS, using 
     }
     ```
 
-2. Publish the Blazor WASM app.
+2. Build the entire solution.
+
+    ```bash
+    dotnet restore .
+    dotnet build .
+    ```
+
+3. Run the function app locally.
+
+    ```bash
+    cd ./FacadeApp
+
+    func start
+    ```
+
+4. Generate proxy client, using NSwag.
+
+    ```bash
+    cd ./BlazorApp.Proxies
+
+    nswag openapi2csclient \
+        /input:http://localhost:7071/api/openapi/v3.json \
+        /namespace:BlazorApp.Proxies \
+        /classname:ProxyClient \
+        /output:ProxyClient.cs
+    ```
+
+5. Publish the Blazor WASM app.
 
     ```bash
     dotnet publish ./BlazorApp -c Release
     ```
 
-3. Publish the Function app
+6. Publish the Function app
 
     ```bash
     dotnet publish ./FacadeApp -c Release
     ```
 
-4. Run the following Azure CLI commands.
+7. Run the following Azure CLI commands.
 
     ```bash
     resource_group=<resource_group_name>
