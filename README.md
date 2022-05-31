@@ -1,6 +1,6 @@
-# Blazor WASM Headless CMS with AutoRest #
+# Blazor WASM Headless CMS with Azure Functions API #
 
-This provides sample code for Blazor WASM app that builds a headless CMS, using AutoRest.
+This provides sample code for Blazor WASM app that builds a headless CMS, with Azure Functions API.
 
 
 ## Prerequisites ##
@@ -10,14 +10,22 @@ This provides sample code for Blazor WASM app that builds a headless CMS, using 
 * [Azure Account (Free)](https://azure.microsoft.com/free/?WT.mc_id=dotnet-68007-juyoo)
 * [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli?WT.mc_id=dotnet-68007-juyoo)
 * [Azure Static Web Apps CLI](https://github.com/Azure/static-web-apps-cli)
-* [AutoRest](https://github.com/Azure/autorest)
 
 
 ## Getting Started ##
 
-### Azure Static Web App Instance ###
+### Install Azure Static Web App (SWA) CLI ###
 
+If you have not already installed the SWA CLI yet, run the following command to install it.
 1. Update FacadeApp's `local.settings.sample.json` to `local.settings.json`, and replace `<your_wordpress_site_name>` with yours.
+
+```bash
+npm install -g @azure/static-web-apps-cli
+```
+
+### Run Blazor WASM App Locally ###
+
+1. Rename `appsettings.sample.json` to `appsettings.json` under the `BlazorApp/wwwroot` directory, and replace the `<your_wordpress_site_name>` part with yours.
 
     ```json
     {
@@ -27,7 +35,7 @@ This provides sample code for Blazor WASM app that builds a headless CMS, using 
     }
     ```
 
-2. Publish the Blazor WASM app.
+2. Build the entire solution.
 
     ```bash
     dotnet publish ./BlazorApp -c Release
@@ -46,6 +54,9 @@ This provides sample code for Blazor WASM app that builds a headless CMS, using 
     swa_name=<staticwebapp_name>
     location=<location>
     wp_name=<your_wordpress_site_name>.wordpress.com
+
+    # Login to Azure
+    az login
 
     # Create a resource group
     az group create -n $resource_group -l $location
@@ -66,3 +77,5 @@ This provides sample code for Blazor WASM app that builds a headless CMS, using 
         -d $swa_key \
         --env default
     ```
+
+5. Open a web browser and go to the URL showing on the terminal.
