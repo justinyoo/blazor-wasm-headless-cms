@@ -8,10 +8,7 @@ namespace BlazorApp.Components
 {
     public partial class Posts : ComponentBase
     {
-        private const string GetPosts = "https://public-api.wordpress.com/rest/v1.1/sites/{0}/posts";
-
-        [Inject]
-        public IConfiguration Configuration { get; set; }
+        private const string GetPosts = "api/posts";
 
         [Inject]
         public HttpClient Http { get; set; }
@@ -20,10 +17,7 @@ namespace BlazorApp.Components
 
         protected override async Task OnInitializedAsync()
         {
-            var siteName = this.Configuration.GetValue<string>("SITE__NAME");
-            var requestUri = string.Format(GetPosts, siteName);
-
-            var payload = await this.Http.GetStringAsync(requestUri).ConfigureAwait(false);
+            var payload = await this.Http.GetStringAsync(GetPosts).ConfigureAwait(false);
             var collection = JsonConvert.DeserializeObject<PostCollection>(payload);
 
             this.PostItems = collection.Posts;
