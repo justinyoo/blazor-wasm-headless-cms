@@ -106,13 +106,13 @@ npm install -g nswag
     dotnet publish ./BlazorApp -c Release -o ./BlazorApp/bin
     ```
 
-4. Publish the Function app
+6. Publish the Function app
 
     ```bash
     dotnet publish ./FacadeApp -c Release -o ./FacadeApp/bin/published
     ```
 
-5. Run the following Azure CLI commands.
+7. Run the following Azure CLI commands.
 
     ```bash
     resource_group=<resource_group_name>
@@ -139,4 +139,4 @@ npm install -g nswag
     swa deploy -i ./FacadeApp/bin/published -d $swa_key --env default
     ```
 
-6. Open a web browser and go to the URL showing on the terminal.
+8. Open a web browser and go to the URL showing on the terminal.
