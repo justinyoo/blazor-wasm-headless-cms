@@ -17,7 +17,6 @@ This provides sample code for Blazor WASM app that builds a headless CMS, with A
 ### Install Azure Static Web App (SWA) CLI ###
 
 If you have not already installed the SWA CLI yet, run the following command to install it.
-1. Update FacadeApp's `local.settings.sample.json` to `local.settings.json`, and replace `<your_wordpress_site_name>` with yours.
 
 ```bash
 npm install -g @azure/static-web-apps-cli
@@ -25,7 +24,7 @@ npm install -g @azure/static-web-apps-cli
 
 ### Run Blazor WASM App Locally ###
 
-1. Rename `appsettings.sample.json` to `appsettings.json` under the `BlazorApp/wwwroot` directory, and replace the `<your_wordpress_site_name>` part with yours.
+1. Rename `local.settings.sample.json` to `local.settings.json` under the `FacadeApp` directory, and replace `<your_wordpress_site_name>` with yours.
 
     ```json
     {
@@ -38,16 +37,51 @@ npm install -g @azure/static-web-apps-cli
 2. Build the entire solution.
 
     ```bash
-    dotnet publish ./BlazorApp -c Release
+    dotnet restore .
+    dotnet build .
     ```
 
-3. Publish the Function app
+3. Run the SWA CLI command.
 
     ```bash
-    dotnet publish ./FacadeApp -c Release
+    swa start
     ```
 
-4. Run the following Azure CLI commands.
+4. Open a web browser and go to `http://localhost:4280`
+
+
+### Build and Deploy App to Azure Static Web App ###
+
+1. Rename `local.settings.sample.json` to `local.settings.json` under the `FacadeApp` directory, and replace `<your_wordpress_site_name>` with yours.
+
+    ```json
+    {
+      "Values": {
+        "SITE__NAME": "<your_wordpress_site_name>.wordpress.com"
+      }
+    }
+    ```
+
+2. Build the entire solution.
+
+    ```bash
+    dotnet restore .
+    dotnet build .
+    ```
+
+3. Publish the Blazor WASM app.
+
+    ```bash
+    dotnet publish ./BlazorApp -c Release -o ./BlazorApp/bin
+    ```
+
+4. Publish the Function app
+
+    ```bash
+    dotnet publish ./FacadeApp -c Release -o ./FacadeApp/bin/published
+    ```
+
+5. Run the following Azure CLI commands.
 
     ```bash
     resource_group=<resource_group_name>
@@ -63,19 +97,15 @@ npm install -g @azure/static-web-apps-cli
 
     # Provision Azure Static Web App instance
     az staticwebapp create -g $resource_group -n $swa_name -l $location
-
-    # Get Azure Static Web App deployment key
-    swa_key=$(az staticwebapp secrets list -g $resource_group -n $swa_name --query "properties.apiKey" -o tsv)
     
     # Update app settings for Azure Static Web App
     az staticwebapp appsettings set -g $resource_group -n $swa_name --setting-names SITE__NAME=$wp_name
 
+    # Get Azure Static Web App deployment key
+    swa_key=$(az staticwebapp secrets list -g $resource_group -n $swa_name --query "properties.apiKey" -o tsv)
+
     # Deploy Azure Static Web App
-    swa deploy \
-        -a ./BlazorApp/bin/Release/net6.0/publish/wwwroot \
-        -i ./FacadeApp/bin/Release/net6.0/publish \
-        -d $swa_key \
-        --env default
+    swa deploy -i ./FacadeApp/bin/published -d $swa_key --env default
     ```
 
-5. Open a web browser and go to the URL showing on the terminal.
+6. Open a web browser and go to the URL showing on the terminal.
