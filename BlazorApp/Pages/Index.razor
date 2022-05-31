@@ -8,31 +8,4 @@ Welcome to your new app.
 
 <SurveyPrompt Title="How is Blazor working for you?" />
 
-@if(this.Posts == null)
-{
-    <p>No post yet.</p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Author</th>
-                <th>Title</th>
-                <th>Excerpt</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var post in this.Posts)
-            {
-                <tr>
-                    <td>@post.Date.ToString()</td>
-                    <td>@post.Author.Name</td>
-                    <td><a href="@post.URL">@post.Title</a></td>
-                    <td>@((MarkupString)post.Excerpt)</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
+<Posts />
