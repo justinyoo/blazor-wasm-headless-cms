@@ -1,6 +1,6 @@
-# Blazor WASM Headless CMS with AutoRest #
+# Blazor WASM Headless CMS with Azure Functions API #
 
-This provides sample code for Blazor WASM app that builds a headless CMS, using AutoRest.
+This provides sample code for Blazor WASM app that builds a headless CMS, with Azure Functions API.
 
 
 ## Prerequisites ##
@@ -10,14 +10,21 @@ This provides sample code for Blazor WASM app that builds a headless CMS, using 
 * [Azure Account (Free)](https://azure.microsoft.com/free/?WT.mc_id=dotnet-68007-juyoo)
 * [Azure CLI](https://docs.microsoft.com/cli/azure/install-azure-cli?WT.mc_id=dotnet-68007-juyoo)
 * [Azure Static Web Apps CLI](https://github.com/Azure/static-web-apps-cli)
-* [AutoRest](https://github.com/Azure/autorest)
 
 
 ## Getting Started ##
 
-### Azure Static Web App Instance ###
+### Install Azure Static Web App (SWA) CLI ###
 
-1. Update `appsettings.sample.json` to `appsettings.json`, and replace the `<your_wordpress_site_name>` part with yours.
+If you have not already installed the SWA CLI yet, run the following command to install it.
+
+```bash
+npm install -g @azure/static-web-apps-cli
+```
+
+### Run Blazor WASM App Locally ###
+
+1. Rename `appsettings.sample.json` to `appsettings.json` under the `BlazorApp/wwwroot` directory, and replace the `<your_wordpress_site_name>` part with yours.
 
     ```json
     {
@@ -25,19 +32,54 @@ This provides sample code for Blazor WASM app that builds a headless CMS, using 
     }
     ```
 
-2. Publish the Blazor WASM app.
+2. Build the entire solution.
 
     ```bash
-    cd ./BlazorApp
-    dotnet publish . -c Release
+    dotnet restore .
+    dotnet build .
     ```
 
-3. Run the following Azure CLI commands.
+3. Run the SWA CLI command.
+
+    ```bash
+    swa start
+    ```
+
+4. Open a web browser and go to `http://localhost:4280`
+
+
+### Build and Deploy App to Azure Static Web App ###
+
+1. Rename `appsettings.sample.json` to `appsettings.json` under the `BlazorApp/wwwroot` directory, and replace the `<your_wordpress_site_name>` part with yours.
+
+    ```json
+    {
+      "SITE__NAME": "<your_wordpress_site_name>.wordpress.com"
+    }
+    ```
+
+2. Build the entire solution.
+
+    ```bash
+    dotnet restore .
+    dotnet build .
+    ```
+
+3. Publish the Blazor WASM app.
+
+    ```bash
+    dotnet publish ./BlazorApp -c Release -o ./BlazorApp/bin
+    ```
+
+4. Run the following Azure CLI commands.
 
     ```bash
     resource_group=<resource_group_name>
     swa_name=<staticwebapp_name>
     location=<location>
+
+    # Login to Azure
+    az login
 
     # Create a resource group
     az group create -n $resource_group -l $location
@@ -49,5 +91,7 @@ This provides sample code for Blazor WASM app that builds a headless CMS, using 
     swa_key=$(az staticwebapp secrets list -g $resource_group -n $swa_name --query "properties.apiKey" -o tsv)
     
     # Deploy Azure Static Web App
-    swa deploy -a ./bin/Release/net6.0/publish/wwwroot -d $swa_key --env default
+    swa deploy -d $swa_key --env default
     ```
+
+5. Open a web browser and go to the URL showing on the terminal.

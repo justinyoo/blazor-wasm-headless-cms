@@ -1,8 +1,12 @@
+using BlazorApp.Models;
+
 using Microsoft.AspNetCore.Components;
 
-namespace BlazorApp.Pages
+using Newtonsoft.Json;
+
+namespace BlazorApp.Components
 {
-    public partial class Index : ComponentBase
+    public partial class Posts : ComponentBase
     {
         private const string GetPosts = "https://public-api.wordpress.com/rest/v1.1/sites/{0}/posts";
 
@@ -12,7 +16,7 @@ namespace BlazorApp.Pages
         [Inject]
         public HttpClient Http { get; set; }
 
-        public string Posts { get; private set; }
+        public IEnumerable<PostItem> PostItems { get; private set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -20,8 +24,9 @@ namespace BlazorApp.Pages
             var requestUri = string.Format(GetPosts, siteName);
 
             var payload = await this.Http.GetStringAsync(requestUri).ConfigureAwait(false);
+            var collection = JsonConvert.DeserializeObject<PostCollection>(payload);
 
-            this.Posts = payload;
+            this.PostItems = collection.Posts;
         }
     }
 }
