@@ -33,14 +33,6 @@ npm install -g nswag
 ```
 
 
-### Build and Deploy App to Azure Static Web App ###
-
-1. Update FacadeApp's `local.settings.sample.json` to `local.settings.json`, and replace `<your_wordpress_site_name>` with yours.
-
-```bash
-npm install -g @azure/static-web-apps-cli
-```
-
 ### Run Blazor WASM App Locally ###
 
 1. Rename `local.settings.sample.json` to `local.settings.json` under the `FacadeApp` directory, and replace `<your_wordpress_site_name>` with yours.
@@ -60,39 +52,13 @@ npm install -g @azure/static-web-apps-cli
     dotnet build .
     ```
 
-3. Run the function app locally.
-
-    ```bash
-    cd ./FacadeApp
-
-    func start
-    ```
-
-4. Generate proxy client, using NSwag.
-
-    ```bash
-    cd ./BlazorApp.Proxies
-
-    nswag openapi2csclient \
-        /input:http://localhost:7071/api/openapi/v3.json \
-        /namespace:BlazorApp.Proxies \
-        /classname:ProxyClient \
-        /output:ProxyClient.cs
-    ```
-
-5. Publish the Blazor WASM app.
-
-    ```bash
-    dotnet publish ./BlazorApp -c Release
-    ```
-
-6. Publish the Function app
+3. Run the SWA CLI command.
 
     ```bash
     swa start
     ```
 
-7. Run the following Azure CLI commands.
+4. Open a web browser and go to `http://localhost:4280`
 
 
 ### Build and Deploy App to Azure Static Web App ###
@@ -114,19 +80,39 @@ npm install -g @azure/static-web-apps-cli
     dotnet build .
     ```
 
-3. Publish the Blazor WASM app.
+3. (Optional) Run the function app locally.
+
+    ```bash
+    cd ./FacadeApp
+
+    func start
+    ```
+
+4. (Optional) Generate proxy client, using NSwag.
+
+    ```bash
+    cd ./BlazorApp.Proxies
+
+    nswag openapi2csclient \
+        /input:http://localhost:7071/api/openapi/v3.json \
+        /namespace:BlazorApp.Proxies \
+        /classname:ProxyClient \
+        /output:ProxyClient.cs
+    ```
+
+5. Publish the Blazor WASM app.
 
     ```bash
     dotnet publish ./BlazorApp -c Release -o ./BlazorApp/bin
     ```
 
-4. Publish the Function app
+6. Publish the Function app
 
     ```bash
     dotnet publish ./FacadeApp -c Release -o ./FacadeApp/bin/published
     ```
 
-5. Run the following Azure CLI commands.
+7. Run the following Azure CLI commands.
 
     ```bash
     resource_group=<resource_group_name>
@@ -153,4 +139,4 @@ npm install -g @azure/static-web-apps-cli
     swa deploy -i ./FacadeApp/bin/published -d $swa_key --env default
     ```
 
-6. Open a web browser and go to the URL showing on the terminal.
+8. Open a web browser and go to the URL showing on the terminal.

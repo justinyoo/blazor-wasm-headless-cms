@@ -11,12 +11,14 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped(sp =>
 {
-    var httpClient = sp.GetService<HttpClient>();
+    var http = sp.GetService<HttpClient>();
+    var proxy = new ProxyClient(http);
     if (builder.HostEnvironment.IsDevelopment() != true)
     {
-        httpClient.BaseAddress = new Uri($"{builder.HostEnvironment.BaseAddress.TrimEnd('/')}/api");
+        proxy.BaseUrl = $"{builder.HostEnvironment.BaseAddress.TrimEnd('/')}/api";
     }
-    return new ProxyClient(httpClient);
+
+    return proxy;
 });
 
 await builder.Build().RunAsync();
