@@ -11,9 +11,6 @@ namespace BlazorApp.Components
         private const string GetPosts = "api/posts";
 
         [Inject]
-        public IConfiguration Configuration { get; set; }
-
-        [Inject]
         public HttpClient Http { get; set; }
 
         public IEnumerable<PostItem> PostItems { get; private set; }
