@@ -24,11 +24,13 @@ npm install -g @azure/static-web-apps-cli
 
 ### Run Blazor WASM App Locally ###
 
-1. Rename `appsettings.sample.json` to `appsettings.json` under the `BlazorApp/wwwroot` directory, and replace the `<your_wordpress_site_name>` part with yours.
+1. Rename `local.settings.sample.json` to `local.settings.json` under the `FacadeApp` directory, and replace `<your_wordpress_site_name>` with yours.
 
     ```json
     {
-      "SITE__NAME": "<your_wordpress_site_name>.wordpress.com"
+      "Values": {
+        "SITE__NAME": "<your_wordpress_site_name>.wordpress.com"
+      }
     }
     ```
 
@@ -50,11 +52,13 @@ npm install -g @azure/static-web-apps-cli
 
 ### Build and Deploy App to Azure Static Web App ###
 
-1. Rename `appsettings.sample.json` to `appsettings.json` under the `BlazorApp/wwwroot` directory, and replace the `<your_wordpress_site_name>` part with yours.
+1. Rename `local.settings.sample.json` to `local.settings.json` under the `FacadeApp` directory, and replace `<your_wordpress_site_name>` with yours.
 
     ```json
     {
-      "SITE__NAME": "<your_wordpress_site_name>.wordpress.com"
+      "Values": {
+        "SITE__NAME": "<your_wordpress_site_name>.wordpress.com"
+      }
     }
     ```
 
@@ -71,12 +75,19 @@ npm install -g @azure/static-web-apps-cli
     dotnet publish ./BlazorApp -c Release -o ./BlazorApp/bin
     ```
 
-4. Run the following Azure CLI commands.
+4. Publish the Function app
+
+    ```bash
+    dotnet publish ./FacadeApp -c Release -o ./FacadeApp/bin/published
+    ```
+
+5. Run the following Azure CLI commands.
 
     ```bash
     resource_group=<resource_group_name>
     swa_name=<staticwebapp_name>
     location=<location>
+    wp_name=<your_wordpress_site_name>.wordpress.com
 
     # Login to Azure
     az login
@@ -86,12 +97,15 @@ npm install -g @azure/static-web-apps-cli
 
     # Provision Azure Static Web App instance
     az staticwebapp create -g $resource_group -n $swa_name -l $location
+    
+    # Update app settings for Azure Static Web App
+    az staticwebapp appsettings set -g $resource_group -n $swa_name --setting-names SITE__NAME=$wp_name
 
     # Get Azure Static Web App deployment key
     swa_key=$(az staticwebapp secrets list -g $resource_group -n $swa_name --query "properties.apiKey" -o tsv)
-    
+
     # Deploy Azure Static Web App
-    swa deploy -d $swa_key --env default
+    swa deploy -i ./FacadeApp/bin/published -d $swa_key --env default
     ```
 
-5. Open a web browser and go to the URL showing on the terminal.
+6. Open a web browser and go to the URL showing on the terminal.
