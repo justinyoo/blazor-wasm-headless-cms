@@ -7,7 +7,7 @@ namespace BlazorApp.Components
     public partial class Posts : ComponentBase
     {
         [Inject]
-        public HttpClient Http { get; set; }
+        public ProxyClient Proxy { get; set; }
 
         public IEnumerable<PostItem> PostItems { get; private set; }
 
